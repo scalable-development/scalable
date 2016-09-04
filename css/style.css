@@ -1,0 +1,11 @@
+html {
+    min-height: 200%; /** need some space to actually scroll **/
+}
+
+#logo {
+    position: fixed;
+    top: 20vmin;
+    left: 10vmin;
+    width: 20vmin;
+    height: 20vmin;
+}
