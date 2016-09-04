@@ -27,7 +27,8 @@ object ScalableLogoComponent {
       val body = html.getElementsByTagName("body").item(0).asInstanceOf[Element]
       val scrollTop = body.scrollTop
       val innerDim = (scrollTop / dom.window.innerHeight * 60) + minInnerDim
-      State(innerDim)
+      val constrainedInnerDim = Math.min(outerDim - 2 * innerPadding, innerDim)
+      State(constrainedInnerDim)
     }
 
 
