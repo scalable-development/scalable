@@ -4,8 +4,10 @@ import japgolly.scalajs.react.extra.{EventListener, OnUnmount}
 import japgolly.scalajs.react.vdom.prefix_<^._
 import japgolly.scalajs.react.{BackendScope, ReactComponentB, Ref}
 import org.scalajs.dom
+import org.scalajs.dom.MouseEvent
 import org.scalajs.dom.raw.SVGSVGElement
-import org.scalajs.dom.{Element, MouseEvent}
+
+import scala.scalajs.js
 
 object ScalableLogoComponent {
 
@@ -22,15 +24,17 @@ object ScalableLogoComponent {
 
   class Backend($: BackendScope[Unit, State]) extends OnUnmount {
 
-    def handleWindowScroll(e: MouseEvent) = $.setState {
-      val html = e.srcElement
-      val body = html.getElementsByTagName("body").item(0).asInstanceOf[Element]
-      val scrollTop = body.scrollTop
-      val innerDim = (scrollTop / dom.window.innerHeight * 60) + minInnerDim
-      val constrainedInnerDim = Math.min(outerDim - 2 * innerPadding, innerDim)
-      State(constrainedInnerDim)
-    }
-
+    def handleWindowScroll(e: MouseEvent) =
+      $.setState {
+        val scrollTop = if (js.isUndefined(e.srcElement))  {
+          dom.document.documentElement.scrollTop // Firefox
+        } else {
+          dom.document.body.scrollTop // Chrome & Safari
+        }
+        val innerDim = (scrollTop / dom.window.innerHeight * 60) + minInnerDim
+        val constrainedInnerDim = Math.min(outerDim - 2 * innerPadding, innerDim)
+        State(constrainedInnerDim)
+      }
 
     def render(s: State) = {
 
